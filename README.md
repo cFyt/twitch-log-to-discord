@@ -25,4 +25,4 @@
 ```
 
 
-- `$ node log.js`
+- `$ node main.js`
