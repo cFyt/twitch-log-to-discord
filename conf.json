@@ -1,0 +1,6 @@
+{
+    "channel": "cfyt",
+    "log_channel_chat": "discord channel id for chat log",
+    "log_channel_oth": "discord channel id for host, subs (etc) log",
+    "token": "discord_token"
+}
