@@ -3,22 +3,36 @@ const log = new Client();
 const config = require('./conf.json');
 const tmi = require('tmi.js');
 const tw = new tmi.Client({
-    channels: [config.channel]
+    channels: [config.channel],
+    options: { debug: true, /*messagesLogLevel: "trace"*/ },
+    //if u dont want to logging messages add to options -> messagesLogLevel: "trace"
+    connection: {
+        secure: true,
+        reconnect: true
+    },
 });
-const chatch = log.channels.cache.get(config.log_channel_chat)
-const othch = log.channels.cache.get(config.log_channel_oth)
+tw.connect()
+log.on('ready', () => {
+    console.log(`${log.user.username} connected`)
+})
 tw.on('submysterygift', (channel, username, numbOfSubs, methods, userstate) => {
+    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${username}, gifting ${numbOfSubs} subscriptions!`);
 });
 tw.on('subgift', (channel, username, streakMonths, recipient, methods, tags) => {
-        othch.send(`${username}, gifted subscriptions to ${recipient}`)
-    }
-
-);
+    const othch = log.channels.cache.get(config.log_channel_oth)
+    othch.send(`${username}, gifted subscriptions to ${recipient}`)
+});
+tw.on('clearchat', (channel) => {
+    const othch = log.channels.cache.get(config.log_channel_oth)
+    othch.send('den')
+})
 tw.on('subscription', (channel, username, methods, message, userstate) => {
+    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`**${userstate['display-name']}** has just subscribed to ${channel.slice(1)}!`)
 })
 tw.on('resub', (channel, username, months, message, userstate, methods) => {
+    const othch = log.channels.cache.get(config.log_channel_oth)
     const month = userstate['msg-param-streak-months'];
     //sometimes months returning null or true not number
     if (month === undefined || month === true) {
@@ -28,13 +42,17 @@ tw.on('resub', (channel, username, months, message, userstate, methods) => {
     }
 })
 tw.on('hosting', (channel, target, viewers) => {
+    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${channel.slice(1)}, hosting to **${target}** ${viewers ? 'with '+viewers : ''}!`)
 })
 tw.on('hosted', (channel, username, viewers, autohost) => {
+    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${username}, hosting to **${channel.slice(1)}** ${viewers ? 'with '+viewers : ''}!`)
 })
 
 tw.on('message', (channel, userstate, message, self, tags) => {
+    const chatch = log.channels.cache.get(config.log_channel_chat)
+
     function msg(name, mesa, color, photo) {
         const embed = new MessageEmbed()
             .setColor(color)
