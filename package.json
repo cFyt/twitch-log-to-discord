@@ -1,5 +1,5 @@
 {
-    "name": "Twitch LOGGER",
+    "name": "twitch-logger",
     "version": "0.0.1",
     "description": "Twitch logger for discord",
     "main": "bot.js",
@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "discord.js": "^12.5.1",
-        "tmi.js": "^1.8.2",
+        "tmi.js": "^1.8.2"
     },
     "license": "MIT",
     "keywords": []
