@@ -15,24 +15,22 @@ tw.connect()
 log.on('ready', () => {
     console.log(`${log.user.username} connected`)
 })
+const othch = log.channels.cache.get(config.log_channel_oth) //others channel
+const chatch = log.channels.cache.get(config.log_channel_chat) //chat channel
+
 tw.on('submysterygift', (channel, username, numbOfSubs, methods, userstate) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${username}, gifting ${numbOfSubs} subscriptions!`);
 });
 tw.on('subgift', (channel, username, streakMonths, recipient, methods, tags) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${username}, gifted subscriptions to ${recipient}`)
 });
 tw.on('clearchat', (channel) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send('den')
 })
 tw.on('subscription', (channel, username, methods, message, userstate) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`**${userstate['display-name']}** has just subscribed to ${channel.slice(1)}!`)
 })
 tw.on('resub', (channel, username, months, message, userstate, methods) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     const month = userstate['msg-param-streak-months'];
     //sometimes months returning null or true not number
     if (month === undefined || month === true) {
@@ -42,17 +40,13 @@ tw.on('resub', (channel, username, months, message, userstate, methods) => {
     }
 })
 tw.on('hosting', (channel, target, viewers) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${channel.slice(1)}, hosting to **${target}** ${viewers ? 'with '+viewers : ''}!`)
 })
 tw.on('hosted', (channel, username, viewers, autohost) => {
-    const othch = log.channels.cache.get(config.log_channel_oth)
     othch.send(`${username}, hosting to **${channel.slice(1)}** ${viewers ? 'with '+viewers : ''}!`)
 })
 
 tw.on('message', (channel, userstate, message, self, tags) => {
-    const chatch = log.channels.cache.get(config.log_channel_chat)
-
     function msg(name, mesa, color, photo) {
         const embed = new MessageEmbed()
             .setColor(color)
@@ -64,7 +58,7 @@ tw.on('message', (channel, userstate, message, self, tags) => {
         chatch.send(embed);
     }
 
-    if (userstate['username'] === channel.slice(1)) {
+    if (userstate['id'] === userstate['room-id']) {
         msg(userstate['display-name'], message, "#fc0303", "https://static-cdn.jtvnw.net/badges/v1/5527c58c-fb7d-422d-b71b-f309dcb85cc1/3")
     } else if (userstate['mod']) {
         msg(userstate['display-name'], message, "#04d43c", "https://i.imgur.com/q2kH9j0.png")
